@@ -1,3 +1,4 @@
+import 'package:checkout_app/core/utils/enums.dart';
 import 'package:checkout_app/features/checkout/presentation/widgets/custom_button_bloc_consumer.dart';
 import 'package:checkout_app/features/checkout/presentation/widgets/payments_methods_list_view.dart';
 import 'package:flutter/material.dart';
@@ -11,13 +12,13 @@ class PaymentMethodsBottomSheet extends StatefulWidget {
 }
 
 class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
-  bool isPaypal = false;
+  PaymentMethodsType? paymentMethodTypes;
 
   updatePaymentMethod({required int index}) {
     if (index == 0) {
-      isPaypal = false;
+      paymentMethodTypes = PaymentMethodsType.stripe;
     } else {
-      isPaypal = true;
+     paymentMethodTypes = PaymentMethodsType.paypal;
     }
     setState(() {});
   }
@@ -34,7 +35,7 @@ class _PaymentMethodsBottomSheetState extends State<PaymentMethodsBottomSheet> {
           ),
           SizedBox(height: 16),
           CustomButtonBlocConsumer(
-            isPaypal: isPaypal,
+            selectedPaymentMethod: paymentMethodTypes ?? PaymentMethodsType.stripe,
           ),
         ],
       ),

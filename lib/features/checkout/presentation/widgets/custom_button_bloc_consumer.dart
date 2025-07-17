@@ -1,7 +1,7 @@
 import 'dart:developer';
-
 import 'package:checkout_app/core/functions/get_transactions.dart';
 import 'package:checkout_app/core/utils/api_keys.dart';
+import 'package:checkout_app/core/utils/enums.dart';
 import 'package:checkout_app/core/widgets/custom_button.dart';
 import 'package:checkout_app/features/checkout/data/paypal_models/amount_model.dart';
 import 'package:checkout_app/features/checkout/data/paypal_models/item_list_model.dart';
@@ -14,11 +14,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 
 class CustomButtonBlocConsumer extends StatelessWidget {
-  final bool isPaypal;
+  final PaymentMethodsType selectedPaymentMethod;
 
   const CustomButtonBlocConsumer({
-    super.key,
-    required this.isPaypal,
+    super.key, required this.selectedPaymentMethod,
   });
 
   @override
@@ -46,11 +45,16 @@ class CustomButtonBlocConsumer extends StatelessWidget {
       builder: (context, state) {
         return CustomButton(
           onTap: () {
-            if (isPaypal) {
+            if (selectedPaymentMethod == PaymentMethodsType.paypal) {
               var transactionsData = getTransactionsData();
               executePaypalPayment(context, transactionsData);
-            } else {
+            } else if (selectedPaymentMethod == PaymentMethodsType.stripe) {
               executeStripePayment(context);
+            } else if (selectedPaymentMethod == PaymentMethodsType.payMob) {
+              // TODO: Implement PayMob payment logic here
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('PayMob payment not implemented yet.')),
+              );
             }
           },
           isLoading: state is PaymentLoading ? true : false,
